@@ -39,10 +39,10 @@ public class SqlSourceBuilder extends BaseBuilder {
     super(configuration);
   }
 
-  public SqlSource parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {
+  public SqlSource parse(String originalSql, Class<?> parameterType, Map<String, Object> additionalParameters) {//解析sql
     ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(configuration, parameterType, additionalParameters);
-    GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
-    String sql = parser.parse(originalSql);
+    GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);//解析sql的
+    String sql = parser.parse(originalSql);//把sql从#{}变成?
     return new StaticSqlSource(configuration, sql, handler.getParameterMappings());
   }
 

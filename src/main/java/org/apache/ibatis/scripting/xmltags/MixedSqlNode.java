@@ -28,8 +28,8 @@ public class MixedSqlNode implements SqlNode {
   }
 
   @Override
-  public boolean apply(DynamicContext context) {
-    for (SqlNode sqlNode : contents) {
+  public boolean apply(DynamicContext context) {//把动态标签的集合取出来
+    for (SqlNode sqlNode : contents) {//遍历这个集合
       sqlNode.apply(context);
     }
     return true;

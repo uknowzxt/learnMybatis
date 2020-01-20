@@ -131,8 +131,8 @@ public abstract class BaseExecutor implements Executor {
 
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
-    BoundSql boundSql = ms.getBoundSql(parameter);
-    CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
+    BoundSql boundSql = ms.getBoundSql(parameter); //拿到sql,参数数量, 参数
+    CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);//创建缓存的key , 一级缓存是自动的 默认开启
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
  }
 
@@ -147,13 +147,13 @@ public abstract class BaseExecutor implements Executor {
       clearLocalCache();
     }
     List<E> list;
-    try {
+    try {//走缓存还是走数据库
       queryStack++;
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
-        handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
+        handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);//不为空从本地缓存拿出来
       } else {
-        list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
+        list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);//为空去查数据库
       }
     } finally {
       queryStack--;
@@ -321,7 +321,7 @@ public abstract class BaseExecutor implements Executor {
 
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
-    localCache.putObject(key, EXECUTION_PLACEHOLDER);
+    localCache.putObject(key, EXECUTION_PLACEHOLDER);//第一次查, 把key存入localCache
     try {
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {

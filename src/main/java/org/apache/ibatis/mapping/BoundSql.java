@@ -36,7 +36,7 @@ import org.apache.ibatis.session.Configuration;
 public class BoundSql {
 
   private final String sql;
-  private final List<ParameterMapping> parameterMappings;
+  private final List<ParameterMapping> parameterMappings;//参数
   private final Object parameterObject;
   private final Map<String, Object> additionalParameters;
   private final MetaObject metaParameters;

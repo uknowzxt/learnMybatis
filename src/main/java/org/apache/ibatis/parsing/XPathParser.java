@@ -205,7 +205,7 @@ public class XPathParser {
     return xnodes;
   }
 
-  public XNode evalNode(String expression) {
+  public XNode evalNode(String expression) {//比如:/configuration
     return evalNode(document, expression);
   }
 

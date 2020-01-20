@@ -111,9 +111,9 @@ public class TypeAliasRegistry {
       String key = string.toLowerCase(Locale.ENGLISH);
       Class<T> value;
       if (TYPE_ALIASES.containsKey(key)) {
-        value = (Class<T>) TYPE_ALIASES.get(key);
+        value = (Class<T>) TYPE_ALIASES.get(key);//直接转化 比如jdbc ,得到了"class org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory"
       } else {
-        value = (Class<T>) Resources.classForName(string);
+        value = (Class<T>) Resources.classForName(string);//其他类型的类, 进行转化. (class.forName(""))
       }
       return value;
     } catch (ClassNotFoundException e) {

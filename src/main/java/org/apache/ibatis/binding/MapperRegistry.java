@@ -58,13 +58,13 @@ public class MapperRegistry {
   }
 
   public <T> void addMapper(Class<T> type) {
-    if (type.isInterface()) {
-      if (hasMapper(type)) {
+    if (type.isInterface()) {//是接口, 才加入
+      if (hasMapper(type)) {//如果发现knownMappers已经存在这个类型的mapper的class对象, 说明这里面的mapper文件重复了.... 报错
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
       }
       boolean loadCompleted = false;
       try {
-        knownMappers.put(type, new MapperProxyFactory<T>(type));
+        knownMappers.put(type, new MapperProxyFactory<T>(type));//顺便给mapper提供了一个MapperProxyFactory, 用来生产具体方法的
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
         // mapper parser. If the type is already known, it won't try.
@@ -91,10 +91,10 @@ public class MapperRegistry {
    */
   public void addMappers(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
-    resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
-    Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
+    resolverUtil.find(new ResolverUtil.IsA(superType), packageName);//把packageName中符合条件的mapper文件加入ResolverUtil的set集合---matches成员变量中
+    Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();//取出matches
     for (Class<?> mapperClass : mapperSet) {
-      addMapper(mapperClass);
+      addMapper(mapperClass);//给成员变量knownMappers, 加入符合条件的mapper
     }
   }
 

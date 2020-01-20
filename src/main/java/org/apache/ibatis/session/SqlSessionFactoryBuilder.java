@@ -60,6 +60,11 @@ public class SqlSessionFactoryBuilder {
     }
   }
 
+  /**
+   * 建造者模式创建工厂
+   * @param inputStream
+   * @return
+   */
   public SqlSessionFactory build(InputStream inputStream) {
     return build(inputStream, null, null);
   }
@@ -72,9 +77,20 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  /**
+   * XMLConfigBuilder: 用来解析xml为全局配置
+   * @param inputStream
+   * @param environment
+   * @param properties
+   * @return
+   */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      //XMLConfigBuilder:用来解析xml配置文件
+      //使用构建者模式
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+      //paser.parse(): 使用XPATH解析XML配置文件,将配置文件封装为COnfiguration对象
+      //返回DefaultSqlSessionFactory对象,该对象拥有Configuration对象
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);
@@ -89,7 +105,7 @@ public class SqlSessionFactoryBuilder {
   }
     
   public SqlSessionFactory build(Configuration config) {
-    return new DefaultSqlSessionFactory(config);
+    return new DefaultSqlSessionFactory(config);//让DefaultsqlSessionFactory持有解析出来的configuration
   }
 
 }

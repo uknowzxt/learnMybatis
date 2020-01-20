@@ -56,7 +56,7 @@ public class XMLIncludeTransformer {
    * @param source Include node in DOM tree
    * @param variablesContext Current context for static variables with values
    */
-  private void applyIncludes(Node source, final Properties variablesContext, boolean included) {
+  private void applyIncludes(Node source, final Properties variablesContext, boolean included) {// [select:null]  null   false
     if (source.getNodeName().equals("include")) {
       Node toInclude = findSqlFragment(getStringAttribute(source, "refid"), variablesContext);
       Properties toIncludeContext = getVariablesContext(source, variablesContext);

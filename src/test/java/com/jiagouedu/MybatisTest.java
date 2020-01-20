@@ -45,7 +45,7 @@ public class MybatisTest {
       InputStream inputStream = Resources.getResourceAsStream(resource);
       SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
       SqlSession sqlSession = sqlSessionFactory.openSession();
-      User user = sqlSession.selectOne("com.jiagouedu.mybatis.UserMapper.selectUser", 1);
+      User user = sqlSession.selectOne("com.jiagouedu.UserMapper.selectUser", 1);
       log.info("user:{}",user);
   }
 
@@ -55,11 +55,10 @@ public class MybatisTest {
     InputStream inputStream = Resources.getResourceAsStream(resource);
     SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     SqlSession sqlSession = sqlSessionFactory.openSession();
-    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);//这是一个代理??
     //User user = sqlSession.selectOne("com.jiagouedu.mybatis.UserMapper.selectUser", 1);
     User user = userMapper.selectUser(1);//查出来的结果是一样
     log.info("user:{}",user);
-
   }
 
 

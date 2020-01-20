@@ -146,6 +146,6 @@ public abstract class BaseBuilder {
   }
 
   protected <T> Class<? extends T> resolveAlias(String alias) {
-    return typeAliasRegistry.resolveAlias(alias);
+    return typeAliasRegistry.resolveAlias(alias);//获取真实的值
   }
 }

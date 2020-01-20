@@ -64,11 +64,17 @@ public class XMLScriptBuilder extends BaseBuilder {
   }
 
   public SqlSource parseScriptNode() {
-    MixedSqlNode rootSqlNode = parseDynamicTags(context);
+    //解析select insert update delete标签中的SQL语句, 最终将解析到sqlNode
+    //***将带有${}号的SQL信息封装到TestSqlNode
+    //***将带有#{}号的SQL信息封装到StaticTestSqlNode
+    //***将带有动态SQL标签中的SQL信息分别封装到不同的SqlNode中
+    MixedSqlNode rootSqlNode = parseDynamicTags(context);//在处理动态标签
     SqlSource sqlSource = null;
+    //如果SQL中包含${}和动态sql语句,则将sqlNode封装到DynamicSqlSource
     if (isDynamic) {
       sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
     } else {
+      //如果SQL中包含#{},则将SqlNode封装到RawSqlSource中,并指定parameterType
       sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
     }
     return sqlSource;
@@ -82,9 +88,9 @@ public class XMLScriptBuilder extends BaseBuilder {
       if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE || child.getNode().getNodeType() == Node.TEXT_NODE) {
         String data = child.getStringBody("");
         TextSqlNode textSqlNode = new TextSqlNode(data);
-        if (textSqlNode.isDynamic()) {
+        if (textSqlNode.isDynamic()) {//这个标签是动态的, 就把他放入集合中, 一会儿要动态处理
           contents.add(textSqlNode);
-          isDynamic = true;
+          isDynamic = true;//这个sql是动态的
         } else {
           contents.add(new StaticTextSqlNode(data));
         }

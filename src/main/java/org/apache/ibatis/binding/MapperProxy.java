@@ -46,9 +46,9 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
-      if (Object.class.equals(method.getDeclaringClass())) {
+      if (Object.class.equals(method.getDeclaringClass())) {//如果是Object类的方法, 直接运行
         return method.invoke(this, args);
-      } else if (isDefaultMethod(method)) {
+      } else if (isDefaultMethod(method)) {//public, 并且这个方法所属的类是接口
         return invokeDefaultMethod(proxy, method, args);
       }
     } catch (Throwable t) {
@@ -65,7 +65,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
       throws Throwable {
     final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
-        .getDeclaredConstructor(Class.class, int.class);
+        .getDeclaredConstructor(Class.class, int.class);//获取Lookup的构造方法
     if (!constructor.isAccessible()) {
       constructor.setAccessible(true);
     }

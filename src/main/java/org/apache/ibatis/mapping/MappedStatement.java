@@ -290,13 +290,13 @@ public final class MappedStatement {
   
   public BoundSql getBoundSql(Object parameterObject) {
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
-    List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+    List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();//参数集
     if (parameterMappings == null || parameterMappings.isEmpty()) {
       boundSql = new BoundSql(configuration, boundSql.getSql(), parameterMap.getParameterMappings(), parameterObject);
     }
 
     // check for nested result maps in parameter mappings (issue #30)
-    for (ParameterMapping pm : boundSql.getParameterMappings()) {
+    for (ParameterMapping pm : boundSql.getParameterMappings()) {//参数绑定(遍历的是需要绑定的参数名称比如id)
       String rmId = pm.getResultMapId();
       if (rmId != null) {
         ResultMap rm = configuration.getResultMap(rmId);

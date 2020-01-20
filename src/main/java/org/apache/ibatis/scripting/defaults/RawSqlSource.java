@@ -36,14 +36,14 @@ public class RawSqlSource implements SqlSource {
 
   private final SqlSource sqlSource;
 
-  public RawSqlSource(Configuration configuration, SqlNode rootSqlNode, Class<?> parameterType) {
+  public RawSqlSource(Configuration configuration, SqlNode rootSqlNode, Class<?> parameterType) {//getSql()把node中的sql语句找出来 #{}这种
     this(configuration, getSql(configuration, rootSqlNode), parameterType);
   }
 
   public RawSqlSource(Configuration configuration, String sql, Class<?> parameterType) {
     SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(configuration);
     Class<?> clazz = parameterType == null ? Object.class : parameterType;
-    sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<String, Object>());
+    sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<String, Object>());//入口
   }
 
   private static String getSql(Configuration configuration, SqlNode rootSqlNode) {

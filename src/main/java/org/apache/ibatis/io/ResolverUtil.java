@@ -214,13 +214,13 @@ public class ResolverUtil<T> {
    *        classes, e.g. {@code net.sourceforge.stripes}
    */
   public ResolverUtil<T> find(Test test, String packageName) {
-    String path = getPackagePath(packageName);
+    String path = getPackagePath(packageName);//获取package的真实路径, 把.用/代替
 
     try {
-      List<String> children = VFS.getInstance().list(path);
+      List<String> children = VFS.getInstance().list(path);//获取了包下的每一个文件的路径到名字
       for (String child : children) {
-        if (child.endsWith(".class")) {
-          addIfMatching(test, child);
+        if (child.endsWith(".class")) {//如果以.class结尾
+          addIfMatching(test, child);//把可以转化成Test类型的mapper的class对象放入set集合---matches
         }
       }
     } catch (IOException ioe) {
@@ -250,15 +250,15 @@ public class ResolverUtil<T> {
   @SuppressWarnings("unchecked")
   protected void addIfMatching(Test test, String fqn) {
     try {
-      String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');
+      String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');//把路径变成包名
       ClassLoader loader = getClassLoader();
       if (log.isDebugEnabled()) {
         log.debug("Checking to see if class " + externalName + " matches criteria [" + test + "]");
       }
 
-      Class<?> type = loader.loadClass(externalName);
+      Class<?> type = loader.loadClass(externalName);//根据包名获取到类的class文件
       if (test.matches(type)) {
-        matches.add((Class<T>) type);
+        matches.add((Class<T>) type);//set集合里面把这个类型的mapper的class对象放进去
       }
     } catch (Throwable t) {
       log.warn("Could not examine class '" + fqn + "'" + " due to a " +

@@ -30,7 +30,7 @@ public class GenericTokenParser {
     this.handler = handler;
   }
 
-  public String parse(String text) {
+  public String parse(String text) {//把#{id}变成?
     if (text == null || text.isEmpty()) {
       return "";
     }
@@ -75,7 +75,7 @@ public class GenericTokenParser {
           builder.append(src, start, src.length - start);
           offset = src.length;
         } else {
-          builder.append(handler.handleToken(expression.toString()));
+          builder.append(handler.handleToken(expression.toString()));//把#{}变成? 并把得到的参数id放入parameterMappings中
           offset = end + closeToken.length();
         }
       }

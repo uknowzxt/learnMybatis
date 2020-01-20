@@ -38,21 +38,21 @@ public class JndiDataSourceFactory implements DataSourceFactory {
   private DataSource dataSource;
 
   @Override
-  public void setProperties(Properties properties) {
+  public void setProperties(Properties properties) {//设置属性的时候直接为factory设置dataSource
     try {
       InitialContext initCtx;
-      Properties env = getEnvProperties(properties);
+      Properties env = getEnvProperties(properties);//处理env属性
       if (env == null) {
-        initCtx = new InitialContext();
+        initCtx = new InitialContext();//创建InitialContext
       } else {
         initCtx = new InitialContext(env);
       }
 
       if (properties.containsKey(INITIAL_CONTEXT)
-          && properties.containsKey(DATA_SOURCE)) {
+          && properties.containsKey(DATA_SOURCE)) { //initial_context 和 data_source
         Context ctx = (Context) initCtx.lookup(properties.getProperty(INITIAL_CONTEXT));
         dataSource = (DataSource) ctx.lookup(properties.getProperty(DATA_SOURCE));
-      } else if (properties.containsKey(DATA_SOURCE)) {
+      } else if (properties.containsKey(DATA_SOURCE)) {//data_source
         dataSource = (DataSource) initCtx.lookup(properties.getProperty(DATA_SOURCE));
       }
 
@@ -72,7 +72,7 @@ public class JndiDataSourceFactory implements DataSourceFactory {
     for (Entry<Object, Object> entry : allProps.entrySet()) {
       String key = (String) entry.getKey();
       String value = (String) entry.getValue();
-      if (key.startsWith(PREFIX)) {
+      if (key.startsWith(PREFIX)) { //key是以 env.开头
         if (contextProperties == null) {
           contextProperties = new Properties();
         }

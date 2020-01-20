@@ -54,8 +54,8 @@ import org.apache.ibatis.type.TypeHandler;
  */
 public class MapperBuilderAssistant extends BaseBuilder {
 
-  private String currentNamespace;
-  private final String resource;
+  private String currentNamespace;//比如 "com.jiagouedu.UserMapper"
+  private final String resource;//比如"mybatis/UserMapper.xml"
   private Cache currentCache;
   private boolean unresolvedCacheRef; // issue #676
 
@@ -299,7 +299,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
 
     MappedStatement statement = statementBuilder.build();
-    configuration.addMappedStatement(statement);
+    configuration.addMappedStatement(statement);//mapperstatement加入配置文件中
     return statement;
   }
 

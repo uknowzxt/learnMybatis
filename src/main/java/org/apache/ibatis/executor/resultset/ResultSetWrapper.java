@@ -106,8 +106,8 @@ public class ResultSetWrapper {
       handler = columnHandlers.get(propertyType);
     }
     if (handler == null) {
-      JdbcType jdbcType = getJdbcType(columnName);
-      handler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
+      JdbcType jdbcType = getJdbcType(columnName);//获取字段的jdbc类型
+      handler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);//具体类型的typeHandler
       // Replicate logic of UnknownTypeHandler#resolveTypeHandler
       // See issue #59 comment 10
       if (handler == null || handler instanceof UnknownTypeHandler) {
@@ -145,8 +145,8 @@ public class ResultSetWrapper {
     List<String> mappedColumnNames = new ArrayList<>();
     List<String> unmappedColumnNames = new ArrayList<>();
     final String upperColumnPrefix = columnPrefix == null ? null : columnPrefix.toUpperCase(Locale.ENGLISH);
-    final Set<String> mappedColumns = prependPrefixes(resultMap.getMappedColumns(), upperColumnPrefix);
-    for (String columnName : columnNames) {
+    final Set<String> mappedColumns = prependPrefixes(resultMap.getMappedColumns(), upperColumnPrefix);//几个大写的属性
+    for (String columnName : columnNames) {//数据库的属性名称
       final String upperColumnName = columnName.toUpperCase(Locale.ENGLISH);
       if (mappedColumns.contains(upperColumnName)) {
         mappedColumnNames.add(upperColumnName);
@@ -154,12 +154,12 @@ public class ResultSetWrapper {
         unmappedColumnNames.add(columnName);
       }
     }
-    mappedColumnNamesMap.put(getMapKey(resultMap, columnPrefix), mappedColumnNames);
+    mappedColumnNamesMap.put(getMapKey(resultMap, columnPrefix), mappedColumnNames);//放入了属性的大写
     unMappedColumnNamesMap.put(getMapKey(resultMap, columnPrefix), unmappedColumnNames);
   }
 
   public List<String> getMappedColumnNames(ResultMap resultMap, String columnPrefix) throws SQLException {
-    List<String> mappedColumnNames = mappedColumnNamesMap.get(getMapKey(resultMap, columnPrefix));
+    List<String> mappedColumnNames = mappedColumnNamesMap.get(getMapKey(resultMap, columnPrefix));//获取成员变量mappedColumnNames. (在寻找unmappedColumnNames的时候就被赋值过了)
     if (mappedColumnNames == null) {
       loadMappedAndUnmappedColumnNames(resultMap, columnPrefix);
       mappedColumnNames = mappedColumnNamesMap.get(getMapKey(resultMap, columnPrefix));
@@ -170,7 +170,7 @@ public class ResultSetWrapper {
   public List<String> getUnmappedColumnNames(ResultMap resultMap, String columnPrefix) throws SQLException {
     List<String> unMappedColumnNames = unMappedColumnNamesMap.get(getMapKey(resultMap, columnPrefix));
     if (unMappedColumnNames == null) {
-      loadMappedAndUnmappedColumnNames(resultMap, columnPrefix);
+      loadMappedAndUnmappedColumnNames(resultMap, columnPrefix);//为unMappedColumnNames和mappedColumnNamesMap赋值
       unMappedColumnNames = unMappedColumnNamesMap.get(getMapKey(resultMap, columnPrefix));
     }
     return unMappedColumnNames;

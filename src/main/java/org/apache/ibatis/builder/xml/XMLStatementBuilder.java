@@ -54,50 +54,50 @@ public class XMLStatementBuilder extends BaseBuilder {
   }
 
   public void parseStatementNode() {
-    String id = context.getStringAttribute("id");
+    String id = context.getStringAttribute("id");//拿到id
     String databaseId = context.getStringAttribute("databaseId");
 
-    if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
+    if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {//查看Configuration中Map<String, MappedStatement> mappedStatements是否已经解析过这个id的mapper了
       return;
     }
 
     Integer fetchSize = context.getIntAttribute("fetchSize");
     Integer timeout = context.getIntAttribute("timeout");
-    String parameterMap = context.getStringAttribute("parameterMap");
-    String parameterType = context.getStringAttribute("parameterType");
-    Class<?> parameterTypeClass = resolveClass(parameterType);
+    String parameterMap = context.getStringAttribute("parameterMap");//拿到parameterMap
+    String parameterType = context.getStringAttribute("parameterType");//拿到parameterType
+    Class<?> parameterTypeClass = resolveClass(parameterType);//比如 int 返回 java.lang.Integer.class
     String resultMap = context.getStringAttribute("resultMap");
     String resultType = context.getStringAttribute("resultType");
     String lang = context.getStringAttribute("lang");
     LanguageDriver langDriver = getLanguageDriver(lang);
 
-    Class<?> resultTypeClass = resolveClass(resultType);
+    Class<?> resultTypeClass = resolveClass(resultType);//获取返回类的类型
     String resultSetType = context.getStringAttribute("resultSetType");
-    StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
+    StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));//拿到statementType 没写就用默认的PREPARED
     ResultSetType resultSetTypeEnum = resolveResultSetType(resultSetType);
 
-    String nodeName = context.getNode().getNodeName();
-    SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
-    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
-    boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
-    boolean useCache = context.getBooleanAttribute("useCache", isSelect);
-    boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
+    String nodeName = context.getNode().getNodeName();//获得 select 或者 insert 这种
+    SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));//sql命令的类型
+    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;//是不是select语句
+    boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);//select默认要刷新缓存
+    boolean useCache = context.getBooleanAttribute("useCache", isSelect);//select默认要使用缓存
+    boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);//默认使用false
 
-    // Include Fragments before parsing
+    // Include Fragments before parsing 递归获得所有的sql碎片, 不懂 是不是指<include>
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
 
     // Parse selectKey after includes and remove them.
-    processSelectKeyNodes(id, parameterTypeClass, langDriver);
+    processSelectKeyNodes(id, parameterTypeClass, langDriver);//解析<selectKey>,然后移除 暂时没涉及 不懂
     
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
-    SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
+    SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);//sql语句 里面会把#{}变成?
     String resultSets = context.getStringAttribute("resultSets");
     String keyProperty = context.getStringAttribute("keyProperty");
     String keyColumn = context.getStringAttribute("keyColumn");
     KeyGenerator keyGenerator;
     String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
-    keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
+    keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);//keyId
     if (configuration.hasKeyGenerator(keyStatementId)) {
       keyGenerator = configuration.getKeyGenerator(keyStatementId);
     } else {
@@ -109,7 +109,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered, 
-        keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets);
+        keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets); //<select>/<insert>语句变成一个mappedStatement
   }
 
   private void processSelectKeyNodes(String id, Class<?> parameterTypeClass, LanguageDriver langDriver) {
@@ -181,14 +181,14 @@ public class XMLStatementBuilder extends BaseBuilder {
       }
       // skip this statement if there is a previous one with a not null databaseId
       id = builderAssistant.applyCurrentNamespace(id, false);
-      if (this.configuration.hasStatement(id, false)) {
+      if (this.configuration.hasStatement(id, false)) {//查看Confuguration中Map<String, MappedStatement> mappedStatements是否已经存在这个id的mapper信息
         MappedStatement previous = this.configuration.getMappedStatement(id, false); // issue #2
         if (previous.getDatabaseId() != null) {
           return false;
         }
       }
     }
-    return true;
+    return true;//没有
   }
 
   private LanguageDriver getLanguageDriver(String lang) {

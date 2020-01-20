@@ -144,8 +144,12 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
-      MappedStatement ms = configuration.getMappedStatement(statement);
-      return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
+      //根据传入的statementId,获取MappedStatement对象
+      MappedStatement ms = configuration.getMappedStatement(statement);//通过id拿到mappedStatement
+      //调用执行器的查询方法
+      //RowBounds是用来逻辑分页
+      //wrapCollection(parameter)是用来装饰集合或者数组参数
+      return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);//wrapCollection(parameter),如果是Collection类型,放入map里面, 不是的话返回来
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
     } finally {
