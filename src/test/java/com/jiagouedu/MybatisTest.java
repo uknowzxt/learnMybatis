@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 @Slf4j
 public class MybatisTest {
- public static void main2(String[] args) throws IOException {
+ public static void main(String[] args) throws IOException {
       String resource = "mybatis-config.xml";
       InputStream inputStream = Resources.getResourceAsStream(resource);
       SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
@@ -50,7 +50,7 @@ public class MybatisTest {
   }
 
 
-  public static void main(String[] args) throws IOException {
+  public static void main2(String[] args) throws IOException {
     String resource = "mybatis-config.xml";
     InputStream inputStream = Resources.getResourceAsStream(resource);
     SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
